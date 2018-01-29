@@ -12,17 +12,21 @@ let executer = undefined;
 module.exports = class {
     static get Executer() { return Executer; }
     
-    static setup(folder, executer) {
-        assert(executer instanceof Executer, 'expect executer to be a subclass of Executer');
-        this._folder = resolve(folder);
-        this._executer = executer; 
+    static setup(callback = undefined) {
+        it("setup test env...", async function() {
+            this.timeout(30000);
+            if (typeof callback === 'function') {
+                await callback();
+            }
+        });
     }
 
-    static async run() {
-        for (const folder of readdir(this._folder).filter(file => stat(join(this._folder, file)).isDirectory())) {
-            for (const scenarioName of readdir(join(this._folder, folder)).filter(name => name.endsWith('.js')).map(name => name.replace(/\.js$/g, ''))) {            
-                const scenario = new Scenario(require(join(this._folder, join(folder, scenarioName))), this._executer);
-                describe(folder, function() {
+    static run(folder, executer) {
+        folder = resolve(folder);
+        for (const subFolder of readdir(folder).filter(file => stat(join(folder, file)).isDirectory())) {
+            for (const scenarioName of readdir(join(folder, subFolder)).filter(name => name.endsWith('.js')).map(name => name.replace(/\.js$/g, ''))) {            
+                const scenario = new Scenario(require(join(folder, join(subFolder, scenarioName))), executer);
+                describe(subFolder, function() {
                     beforeEach(async function() {
                         this.timeout(5000);
                         await scenario.init();

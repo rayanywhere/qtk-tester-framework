@@ -1,28 +1,10 @@
-const Executer = require('../').Executer;
+const AppExecuter = require('./executer');
 const Tester = require('../');
 
-class AppExecuter extends Executer {
-    async init() {
+const sleep = (sec) => {
+    return new Promise(resolve => setTimeout(resolve, sec * 1000));
+};
 
-    }
+Tester.setup(async () => {await sleep(3)});
 
-    async fini() {
-
-    }
-
-    async send(name, request, context) {
-        if (name == 'login') {
-            return {error: undefined, response: "abcdefg"};
-        }
-        else if (name == 'user.info.get') {
-            return {error: undefined, response: {name:"ray", age:18}};
-        }
-        return {error: new Error('unknown')};
-    }
-}
-
-Tester.setup('./scenario', new AppExecuter());
-(async () => await Tester.run())().catch(err => {
-    console.error(err.stack);
-    process.exit(-1);
-});
+Tester.run('./scenario', new AppExecuter());
