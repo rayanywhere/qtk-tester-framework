@@ -3,8 +3,8 @@ module.exports = class {
     async fini() { throw new Error(`"fini" method is expected to be implemented in subclass`); }
 
     /**
-     * @param  request, context
+     * @param  name, request, context, timeout
      * @return {error, response} 
      */
-    async send(request, context) { throw new Error(`"send" method is expected to be implemented in subclass`); }
+    async send(name, request, context, timeout) { throw new Error(`"send" method is expected to be implemented in subclass`); }
 }

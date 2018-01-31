@@ -43,7 +43,7 @@ module.exports = class Scenario {
         try {
             for (let step of this._steps) {
                 const request = step.prepareRequest(this._dataset);
-                const {error, response} = await this._executer.send(step.name, request, this._dataset.context);
+                const {error, response} = await this._executer.send(step.name, request, this._dataset.context, step.timeout);
                 step.handleResponse({error, response}, this._dataset);
                 this._dataset._steps.push({request, response, error});
             }
